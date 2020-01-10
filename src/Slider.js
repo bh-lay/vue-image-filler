@@ -20,6 +20,7 @@ const Slider = {
 		<div :style="{width: (progressLocal * 100) + '%'}"><i
 			:class="[isDragging ? 'dragging' : '']"
 			@mousedown="dragHandle"
+			@touchstart="dragHandle"
 		></i></div>
 	</div>`,
 	data: function () {

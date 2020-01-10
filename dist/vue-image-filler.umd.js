@@ -16,44 +16,66 @@
 	    return css;
 	}
 
+	function preventDefault(event) {
+		window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
+		event.preventDefault && event.preventDefault();
+		event.stopPropagation && event.stopPropagation();
+	}
+	function getParam(clientX, clientY, startX, startY) {
+		var xOffset = clientX - startX;
+		var yOffset = clientY - startY;
+
+		return {
+			clientX: clientX,
+			clientY: clientY,
+			xOffset: xOffset,
+			yOffset: yOffset
+		};
+	}
 	function dragHandle(event, _ref) {
 		var move = _ref.move,
 		    end = _ref.end;
 
+		var isTouch = event.type === 'touchstart';
 		var startX = event.clientX;
 		var startY = event.clientY;
 
-		event.preventDefault && event.preventDefault();
-		event.stopPropagation && event.stopPropagation();
-
-		document.addEventListener('mousemove', mousemove, false);
-		document.addEventListener('mouseup', up, false);
-
-		function getParam(e) {
-			var clientX = e.clientX;
-			var clientY = e.clientY;
-			var xOffset = clientX - startX;
-			var yOffset = clientY - startY;
-
-			return {
-				clientX: clientX,
-				clientY: clientY,
-				xOffset: xOffset,
-				yOffset: yOffset
-			};
+		preventDefault(event);
+		if (isTouch) {
+			startX = event.touches[0].clientX;
+			startY = event.touches[0].clientY;
+			event.target.addEventListener('touchmove', touchmove, false);
+			event.target.addEventListener('touchend', touchend, false);
+			event.target.addEventListener('touchcancel', touchend, false);
+		} else {
+			document.addEventListener('mousemove', mousemove, false);
+			document.addEventListener('mouseup', mouseup, false);
 		}
+		var lastClientX = void 0;
+		var lastClientY = void 0;
+		function touchmove(e) {
+			preventDefault(e);
+			lastClientX = e.touches[0].clientX;
+			lastClientY = e.touches[0].clientY;
+			move && move(getParam(lastClientX, lastClientY, startX, startY));
+		}
+		function touchend(e) {
+			event.target.removeEventListener('touchmove', touchmove, false);
+			event.target.removeEventListener('touchend', touchend, false);
+			event.target.removeEventListener('touchcancel', touchend, false);
+			end && end(getParam(lastClientX, lastClientY, startX, startY));
+		}
+
 		function mousemove(e) {
-			e.preventDefault && e.preventDefault();
-			e.stopPropagation && e.stopPropagation();
+			preventDefault(e);
 			window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
-
-			move && move(getParam(e));
+			move && move(getParam(e.clientX, e.clientY, startX, startY));
 		}
-		function up(e) {
+		function mouseup(e) {
 			document.removeEventListener('mousemove', mousemove, false);
-			document.removeEventListener('mouseup', up, false);
+			document.removeEventListener('mouseup', mouseup, false);
 
-			end && end(getParam(e));
+			end && end(getParam(e.clientX, e.clientY, startX, startY));
 		}
 	}
 
@@ -73,7 +95,7 @@
 				default: 0
 			}
 		},
-		template: '<div class="vue-image-filler-slider-bar" ref="outer">\n\t\t<div :style="{width: (progressLocal * 100) + \'%\'}"><i\n\t\t\t:class="[isDragging ? \'dragging\' : \'\']"\n\t\t\t@mousedown="dragHandle"\n\t\t></i></div>\n\t</div>',
+		template: '<div class="vue-image-filler-slider-bar" ref="outer">\n\t\t<div :style="{width: (progressLocal * 100) + \'%\'}"><i\n\t\t\t:class="[isDragging ? \'dragging\' : \'\']"\n\t\t\t@mousedown="dragHandle"\n\t\t\t@touchstart="dragHandle"\n\t\t></i></div>\n\t</div>',
 		data: function data() {
 			return {
 				isDragging: false
@@ -111,7 +133,7 @@
 		beforeDestroy: function beforeDestroy() {}
 	};
 
-	var template = "<div class=\"vue-image-filler\" ref=\"outer\">\r\n\t<input type=\"file\"\r\n\t\tref=\"uploadInput\"\r\n\t\taccept=\"image/png, image/jpg, image/jpeg\"\r\n\t\t@change=\"fileChangeHandle($event)\"\r\n\t\tclass=\"vue-image-filler-real-input\"\r\n\t/>\r\n\t<template v-if=\"!isFileSelected\">\r\n\t\t<div class=\"vue-image-filler-view\">\r\n\t\t\t<button @click=\"triggerFileSelect\" class=\"vue-image-filler-button\">选择图片</button>\r\n\t\t\t<p>仅支持jpg、png、jpeg格式文件上传！</p>\r\n\t\t</div>\r\n\t</template>\r\n\t<template v-else>\r\n\t\t<div class=\"vue-image-filler-canvas\"\r\n\t\t\t:style=\"{\r\n\t\t\t\theight: size.canvasHeight\r\n\t\t\t}\"\r\n\t\t\t@mousedown=\"moveImage\"\r\n\t\t>\r\n\t\t\t<div class=\"vue-image-filler-canvas-img\" ref=\"canvasImage\"\r\n\t\t\t\t:style=\"{\r\n\t\t\t\t\twidth: imageWidthInView + 'px',\r\n\t\t\t\t\theight: imageHeightInView + 'px',\r\n\t\t\t\t\tmarginTop: size.offsetTop + 'px',\r\n\t\t\t\t\tmarginLeft: size.offsetLeft + 'px'\r\n\t\t\t\t}\"\r\n\t\t\t></div>\r\n\t\t\t<div\r\n\t\t\t\tclass=\"vue-image-filler-canvas-mask\"\r\n\t\t\t\t:style=\"{\r\n\t\t\t\t\twidth: size.cropWidthInView + 'px',\r\n\t\t\t\t\theight: size.cropHeightInView + 'px',\r\n\t\t\t\t}\"\r\n\t\t\t></div>\r\n\t\t</div>\r\n\t\t<Slider\r\n\t\t\t:min=\"size.scaleMin\"\r\n\t\t\t:max=\"size.scaleMax\"\r\n\t\t\tv-model=\"size.scale\"\r\n\t  />\r\n\t  <div class=\"vue-image-filler-footer\">\r\n\t\t\t<button class=\"vue-image-filler-button\" @click=\"upload\">上传</button>\r\n\t\t\t<button class=\"vue-image-filler-text-button\" @click=\"triggerFileSelect\">重新上传</button>\r\n\t\t</div>\r\n\t</template>\r\n</div>";
+	var template = "<div class=\"vue-image-filler\" ref=\"outer\">\r\n\t<input type=\"file\"\r\n\t\tref=\"uploadInput\"\r\n\t\taccept=\"image/png, image/jpg, image/jpeg\"\r\n\t\t@change=\"fileChangeHandle($event)\"\r\n\t\tclass=\"vue-image-filler-real-input\"\r\n\t/>\r\n\t<template v-if=\"!isFileSelected\">\r\n\t\t<div class=\"vue-image-filler-view\">\r\n\t\t\t<button @click=\"triggerFileSelect\" class=\"vue-image-filler-button\">选择图片</button>\r\n\t\t\t<p>仅支持jpg、png、jpeg格式文件上传！</p>\r\n\t\t</div>\r\n\t</template>\r\n\t<template v-else>\r\n\t\t<div class=\"vue-image-filler-canvas\"\r\n\t\t\t:style=\"{\r\n\t\t\t\theight: size.canvasHeight\r\n\t\t\t}\"\r\n\t\t\t@mousedown=\"moveImage\"\r\n\t\t\t@touchstart=\"moveImage\"\r\n\t\t>\r\n\t\t\t<div class=\"vue-image-filler-canvas-img\" ref=\"canvasImage\"\r\n\t\t\t\t:style=\"{\r\n\t\t\t\t\twidth: imageWidthInView + 'px',\r\n\t\t\t\t\theight: imageHeightInView + 'px',\r\n\t\t\t\t\tmarginTop: size.offsetTop + 'px',\r\n\t\t\t\t\tmarginLeft: size.offsetLeft + 'px'\r\n\t\t\t\t}\"\r\n\t\t\t></div>\r\n\t\t\t<div\r\n\t\t\t\tclass=\"vue-image-filler-canvas-mask\"\r\n\t\t\t\t:style=\"{\r\n\t\t\t\t\twidth: size.cropWidthInView + 'px',\r\n\t\t\t\t\theight: size.cropHeightInView + 'px',\r\n\t\t\t\t}\"\r\n\t\t\t></div>\r\n\t\t</div>\r\n\t\t<Slider\r\n\t\t\t:min=\"size.scaleMin\"\r\n\t\t\t:max=\"size.scaleMax\"\r\n\t\t\tv-model=\"size.scale\"\r\n\t  />\r\n\t  <div class=\"vue-image-filler-footer\">\r\n\t\t\t<button class=\"vue-image-filler-button\" @click=\"upload\">上传</button>\r\n\t\t\t<button class=\"vue-image-filler-text-button\" @click=\"triggerFileSelect\">重新上传</button>\r\n\t\t</div>\r\n\t</template>\r\n</div>";
 
 	__$styleInject(".vue-image-filler *,\n.vue-image-filler *:before,\n.vue-image-filler *:after {\n  box-sizing: content-box;\n}\n.vue-image-filler .vue-image-filler-real-input {\n  display: none;\n}\n.vue-image-filler .vue-image-filler-button {\n  height: 40px;\n  margin: 0;\n  padding: 0 30px;\n  border: none;\n  border-radius: 4px;\n  background: #2196f3;\n  font-size: 14px;\n  color: #fff;\n  cursor: pointer;\n  transition: 0.15s;\n}\n.vue-image-filler .vue-image-filler-button:hover {\n  background: #0b7ad5;\n}\n.vue-image-filler .vue-image-filler-button:active {\n  background: #235c8b;\n}\n.vue-image-filler .vue-image-filler-button:focus {\n  outline: none;\n}\n.vue-image-filler .vue-image-filler-text-button {\n  margin: 0 0 0 12px;\n  padding: 0;\n  border: none;\n  background: transparent;\n  font-size: 14px;\n  color: #2196f3;\n  cursor: pointer;\n  transition: 0.15s;\n}\n.vue-image-filler .vue-image-filler-text-button:hover {\n  color: #0b7ad5;\n}\n.vue-image-filler .vue-image-filler-text-button:active {\n  color: #235c8b;\n}\n.vue-image-filler .vue-image-filler-text-button:focus {\n  outline: none;\n}\n.vue-image-filler .vue-image-filler-view {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-direction: column;\n  height: 400px;\n}\n.vue-image-filler .vue-image-filler-view p {\n  margin: 30px 0 0;\n  font-size: 14px;\n  color: #d3d9de;\n}\n.vue-image-filler .vue-image-filler-canvas {\n  position: relative;\n  height: 300px;\n  overflow: hidden;\n  background: #ddd;\n  cursor: grab;\n}\n.vue-image-filler .vue-image-filler-canvas:active {\n  cursor: grabbing;\n}\n.vue-image-filler .vue-image-filler-canvas-img {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  outline: 1000px solid rgba(255, 255, 255, 0.7);\n  pointer-events: none;\n}\n.vue-image-filler .vue-image-filler-canvas-img img {\n  display: block;\n  width: 100%;\n}\n.vue-image-filler .vue-image-filler-canvas-mask {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  outline: 1000px solid rgba(255, 255, 255, 0.5);\n  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1), 0 0 3px rgba(0, 0, 0, 0.2);\n}\n.vue-image-filler .vue-image-filler-slider-bar {\n  position: relative;\n  height: 40px;\n  margin: 60px 80px 40px;\n}\n.vue-image-filler .vue-image-filler-slider-bar:before,\n.vue-image-filler .vue-image-filler-slider-bar div,\n.vue-image-filler .vue-image-filler-slider-bar i {\n  position: absolute;\n  top: 50%;\n  display: block;\n}\n.vue-image-filler .vue-image-filler-slider-bar:before {\n  content: '';\n  width: 100%;\n  height: 6px;\n  margin-top: -3px;\n  border-radius: 3px;\n  background: #e4e7ed;\n}\n.vue-image-filler .vue-image-filler-slider-bar div {\n  left: 0;\n  height: 6px;\n  margin-top: -3px;\n  border-radius: 3px;\n  background: #409eff;\n}\n.vue-image-filler .vue-image-filler-slider-bar i {\n  width: 40px;\n  height: 40px;\n  margin-top: -20px;\n  right: -20px;\n  transition: 0.15s ease-in-out;\n  cursor: grab;\n}\n.vue-image-filler .vue-image-filler-slider-bar i:before {\n  content: '';\n  display: block;\n  position: relative;\n  width: 14px;\n  height: 14px;\n  top: 11px;\n  left: 11px;\n  border-radius: 100%;\n  border: 2px solid #409eff;\n  background: #fff;\n}\n.vue-image-filler .vue-image-filler-slider-bar i:hover {\n  transform: scale(1.2);\n}\n.vue-image-filler .vue-image-filler-slider-bar i.dragging {\n  transform: scale(1.2);\n}\n.vue-image-filler .vue-image-filler-slider-bar i.dragging:before {\n  border-color: #2787e7;\n  background: #edf2f7;\n}\n.vue-image-filler .vue-image-filler-slider-bar i:active {\n  cursor: grabbing;\n}\n.vue-image-filler .vue-image-filler-footer {\n  padding: 20px 0 60px 80px;\n  text-align: center;\n}\n");
 
