@@ -1,60 +1,79 @@
+// 清除页面选择，组织浏览器默认事件防止页面抖动
 function preventDefault (event) {
 	window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty()
 	event.preventDefault && event.preventDefault()
 	event.stopPropagation && event.stopPropagation()
 }
-function getParam(clientX, clientY, startX, startY) {
+// 回调触发器
+function stepCall(callback, event, startX, startY) {
+	if (!callback) {
+		return
+	}
+	let clientX = event.clientX
+	let clientY = event.clientY
 	let xOffset = clientX - startX
 	let yOffset = clientY - startY
 
-	return {
+	callback({
 		clientX,
 		clientY,
 		xOffset,
 		yOffset
-	}
+	})
 }
-function dragHandle(event, { move, end }) {
-	let isTouch = event.type === 'touchstart'
-	let startX = event.clientX
-	let startY = event.clientY
 
-	preventDefault (event)
-	if (isTouch) {
-		startX = event.touches[0].clientX
-		startY = event.touches[0].clientY
-		event.target.addEventListener('touchmove', touchmove, false)
-		event.target.addEventListener('touchend', touchend, false)
-		event.target.addEventListener('touchcancel', touchend, false)
-	} else {
-		document.addEventListener('mousemove', mousemove, false)
-		document.addEventListener('mouseup', mouseup, false)
-	} 
-	let lastClientX
-	let lastClientY
+// 触摸屏逻辑
+function touch (event, move, end) {
+	let startX = event.touches[0].clientX
+	let startY = event.touches[0].clientY
+	let lastTouch
+
 	function touchmove(e) {
 		preventDefault (e)
-		lastClientX = e.touches[0].clientX
-		lastClientY = e.touches[0].clientY
-		move && move(getParam(lastClientX, lastClientY, startX, startY))
+		lastTouch = e.touches[0]
+		stepCall(move, lastTouch, startX, startY)
 	}
+
 	function touchend(e) {
 		event.target.removeEventListener('touchmove', touchmove, false)
 		event.target.removeEventListener('touchend', touchend, false)
 		event.target.removeEventListener('touchcancel', touchend, false)
-		end && end(getParam(lastClientX, lastClientY, startX, startY))
+		stepCall(end, lastTouch, startX, startY)
 	}
-	
+
+	event.target.addEventListener('touchmove', touchmove, false)
+	event.target.addEventListener('touchend', touchend, false)
+	event.target.addEventListener('touchcancel', touchend, false)
+}
+// 鼠标逻辑
+function mouse (event, move, end) {
+	let startX = event.clientX
+	let startY = event.clientY
+
 	function mousemove(e) {
 		preventDefault (e)
 		window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty()
-		move && move(getParam(e.clientX, e.clientY, startX, startY))
+		stepCall(move, e, startX, startY)
 	}
+
 	function mouseup(e) {
 		document.removeEventListener('mousemove', mousemove, false)
 		document.removeEventListener('mouseup', mouseup, false)
-
-		end && end(getParam(e.clientX, e.clientY, startX, startY))
+		stepCall(end, e, startX, startY)
 	}
+
+	document.addEventListener('mousemove', mousemove, false)
+	document.addEventListener('mouseup', mouseup, false)
+}
+
+// 主逻辑
+function dragHandle(event, { move, end }) {
+	preventDefault (event)
+	if (event.type === 'touchstart') {
+		touch(event, move, end)
+	} else {
+		mouse(event, move, end)
+	}
+
 }
 export default dragHandle
