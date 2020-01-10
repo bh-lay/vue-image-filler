@@ -4,14 +4,59 @@
   *:after {
     box-sizing: content-box
   }
+  .file-select-real-input{
+    display: none;
+  }
+  .file-select-button {
+    height: 40px;
+    margin: 0;
+    padding: 0 30px;
+    border: none;
+    border-radius: 4px;
+    background: #2196f3;
+    font-size: 14px;
+    color: #fff;
+    cursor: pointer;
+    transition: .15s;
+    &:hover {
+      background: #0b7ad5;
+    }
+    &:active {
+      background: #235c8b;
+    }
+    &:focus {
+      outline: none
+    }
+  }
+  .file-select-text-button {
+    margin: 0 0 0 12px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    color: #2196f3;
+    cursor: pointer;
+    transition: .15s;
+    &:hover {
+      color: #0b7ad5;
+    }
+    &:active {
+      color: #235c8b;
+    }
+    &:focus {
+      outline: none
+    }
+  }
   .file-select-view{
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    height: 300px;
-    .real-input{
-      display: none;
+    height: 400px;
+    p {
+      margin: 30px 0 0;
+      font-size: 14px;
+      color: #d3d9de
     }
   }
   .canvas-area{
@@ -110,7 +155,7 @@
     }
   }
   .footer {
-    padding: 20px 0 30px 80px;
+    padding: 20px 0 60px 80px;
     text-align: center;
     .main-button{
       width: 200px 
