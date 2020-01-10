@@ -2,7 +2,7 @@
 	<input type="file"
 		ref="uploadInput"
 		accept="image/png, image/jpg, image/jpeg"
-		@change="beforeUpload($event)"
+		@change="fileChangeHandle($event)"
 		class="vue-image-filler-real-input"
 	/>
 	<template v-if="!isFileSelected">
