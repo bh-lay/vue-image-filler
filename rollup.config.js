@@ -1,6 +1,7 @@
 
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
+import babel from 'rollup-plugin-babel';
 import { string } from "rollup-plugin-string";
 import { terser } from 'rollup-plugin-terser';
 import less from 'rollup-plugin-less';
@@ -31,6 +32,9 @@ export default {
 		}),
 		resolve(), // tells Rollup how to find date-fns in node_modules
 		commonjs(), // converts date-fns to ES modules
+		babel({
+			exclude: 'node_modules/**',
+		})
 		// production && terser() // minify, but only in production
 	]
 };
