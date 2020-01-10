@@ -143,11 +143,11 @@ var ImageFiller = {
 		upload() {
 			this.capture(({ fileBlob, config }) => {
 				let file = new File([fileBlob], 'capture.jpeg', { type: 'image/jpeg', lastModified: Date.now() })
-				return {
+				this.$emit('confirm', {
 					fileBlob,
 					file,
 					config
-				}
+				})
 			})
 		},
 		capture(callback) {
@@ -165,10 +165,10 @@ var ImageFiller = {
 				callback && callback({
 					fileBlob,
 					config: {
-						x: usedX / usedWidth,
-						y: usedY / usedHeight,
-						width: -this.cropWidth / usedWidth,
-						height: -this.cropHeight / usedHeight
+						x: -usedX / usedWidth + 0,
+						y: -usedY / usedHeight + 0,
+						width: this.cropWidth / usedWidth,
+						height: this.cropHeight / usedHeight
 					}
 				})
 			}, 'image/jpeg', 0.95)

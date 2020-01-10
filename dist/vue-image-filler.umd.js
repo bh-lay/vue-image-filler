@@ -285,20 +285,22 @@
 				});
 			},
 			upload: function upload() {
+				var _this3 = this;
+
 				this.capture(function (_ref2) {
 					var fileBlob = _ref2.fileBlob,
 					    config = _ref2.config;
 
 					var file = new File([fileBlob], 'capture.jpeg', { type: 'image/jpeg', lastModified: Date.now() });
-					return {
+					_this3.$emit('confirm', {
 						fileBlob: fileBlob,
 						file: file,
 						config: config
-					};
+					});
 				});
 			},
 			capture: function capture(callback) {
-				var _this3 = this;
+				var _this4 = this;
 
 				var canvas = document.createElement('canvas');
 				canvas.width = this.cropWidth;
@@ -314,10 +316,10 @@
 					callback && callback({
 						fileBlob: fileBlob,
 						config: {
-							x: usedX / usedWidth,
-							y: usedY / usedHeight,
-							width: -_this3.cropWidth / usedWidth,
-							height: -_this3.cropHeight / usedHeight
+							x: -usedX / usedWidth + 0,
+							y: -usedY / usedHeight + 0,
+							width: _this4.cropWidth / usedWidth,
+							height: _this4.cropHeight / usedHeight
 						}
 					});
 				}, 'image/jpeg', 0.95);
