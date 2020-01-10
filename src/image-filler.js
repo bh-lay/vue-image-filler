@@ -99,8 +99,8 @@ var ImageFiller = {
 			let fileBlobURL = window.URL.createObjectURL(new Blob([file]))
 			let image = new Image()
 			image.onload = () => {
-				this.size.imageWidth = image.naturalWidth
-				this.size.imageHeight = image.naturalHeight
+				this.size.imageWidth = image.width || image.naturalWidth
+				this.size.imageHeight = image.height || image.naturalHeight
 				this.size.canvasWidth = this.$refs.outer.clientWidth
 				let { width, height } = getBoxSizePlaceIntoAnotherBox(this.cropWidth, this.cropHeight, this.size.canvasWidth, this.size.canvasHeight)
 				this.size.cropWidthInView = width * .8
