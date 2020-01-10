@@ -1,0 +1,47 @@
+<div class="vue-image-filler" ref="outer">
+	<template v-if="!isFileSelected">
+	  <div class="file-select-view">
+		<input type="file"
+		  ref="uploadInput"
+		  accept="image/png, image/jpg, image/jpeg"
+		  @change="beforeUpload($event)"
+		  class="real-input"
+		/>
+		<button @click="triggerFileSelect" class="button">选择图片</button>
+		<p>仅支持jpg、png、jpeg格式文件上传！</p>
+	  </div>
+	</template>
+	<template v-else>
+	  <div class="canvas-area"
+		:style="{
+		  height: size.canvasHeight
+		}"
+		@mousedown="moveImage"
+	  >
+		<div class="canvas-img" ref="canvasImage"
+		  :style="{
+			width: imageWidthInView + 'px',
+			height: imageHeightInView + 'px',
+			marginTop: size.offsetTop + 'px',
+			marginLeft: size.offsetLeft + 'px'
+		  }"
+		></div>
+		<div
+		  class="canvas-mask"
+		  :style="{
+			width: size.cropWidthInView + 'px',
+			height: size.cropHeightInView + 'px',
+		  }"
+		></div>
+	  </div>
+	  <Slider
+		:min="size.scaleMin"
+		:max="size.scaleMax"
+		v-model="size.scale"
+	  />
+	  <div class="footer">
+		<button type="primary" class="main-button" @click="upload">上传</button>
+		<button type="text" @click="isFileSelected=false">重新上传</button>
+	  </div>
+	</template>
+  </div>

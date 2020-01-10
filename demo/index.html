@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>图像填充（剪裁）demo</title>
+	<style type="text/css">
+		body {
+			margin: 0;
+			padding: 0;
+			background: #333;
+		}
+
+		.container {
+			position: relative;
+			width: 80%;
+			max-width: 500px;
+			min-height: 400px;
+			background: #fff;
+			margin: 20px auto;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="app"></div>
+	<script src="vue.min.js"></script>
+	<script type="text/javascript" src="../dist/vue-image-filler.umd.js"></script>
+	<script>
+		new Vue({
+			el: '#app',
+			data: {
+			},
+			components: {
+				ImageFiller: ImageFiller
+			},
+			template: '<div>' +
+				'<div class="container">' +
+					'<ImageFiller ' +
+						':width="300"' +
+						':height="200"' +
+					'/>' +
+				'</div>'+
+			'</div>',
+			methods: {
+			}
+		})
+	</script>
+</body>
+</html>
