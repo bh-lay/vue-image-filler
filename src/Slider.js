@@ -1,7 +1,7 @@
 import dragHandle from './drag-handle.js'
 
-var Slider = {
-	name: 'image-filler',
+const Slider = {
+	name: 'image-filler-slider',
 	props: {
 		min: {
 			type: Number,
