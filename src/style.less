@@ -1,164 +1,160 @@
 .vue-image-filler {
-  *,
-  *:before,
-  *:after {
-    box-sizing: content-box
-  }
-  .file-select-real-input{
-    display: none;
-  }
-  .file-select-button {
-    height: 40px;
-    margin: 0;
-    padding: 0 30px;
-    border: none;
-    border-radius: 4px;
-    background: #2196f3;
-    font-size: 14px;
-    color: #fff;
-    cursor: pointer;
-    transition: .15s;
-    &:hover {
-      background: #0b7ad5;
-    }
-    &:active {
-      background: #235c8b;
-    }
-    &:focus {
-      outline: none
-    }
-  }
-  .file-select-text-button {
-    margin: 0 0 0 12px;
-    padding: 0;
-    border: none;
-    background: transparent;
-    font-size: 14px;
-    color: #2196f3;
-    cursor: pointer;
-    transition: .15s;
-    &:hover {
-      color: #0b7ad5;
-    }
-    &:active {
-      color: #235c8b;
-    }
-    &:focus {
-      outline: none
-    }
-  }
-  .file-select-view{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    height: 400px;
-    p {
-      margin: 30px 0 0;
-      font-size: 14px;
-      color: #d3d9de
-    }
-  }
-  .canvas-area{
-    position: relative;
-    height: 300px;
-    overflow: hidden;
-    background: #ddd;
-    cursor: grab;
-    &:active{
-      cursor: grabbing;
-    }
-  }
-  .canvas-img{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    outline: 1000px solid rgba(255, 255, 255, .7);
-    pointer-events: none;
-    img{
-      display: block;
-      width: 100%
-    }
-  }
-  .canvas-mask {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    outline: 1000px solid rgba(255, 255, 255, .5);
-    box-shadow: 0 0 10px rgba(0,0,0,.1), 0 0 3px rgba(0,0,0,.2);
-  }
-  
-  .slider-bar{
-    position: relative;
-    height: 40px;
-    margin: 60px 80px 40px;
-    &:before,
-    div,
-    i {
-      position: absolute;
-      top: 50%;
-      display: block;
-    }
-    &:before {
-      content: '';
-      width: 100%;
-      height: 6px;
-      margin-top: -3px;
-      border-radius: 3px;
-      background: #e4e7ed;
+	*,
+	*:before,
+	*:after {
+		box-sizing: content-box
+	}
+	.vue-image-filler-real-input{
+		display: none;
+	}
+	.vue-image-filler-button {
+		height: 40px;
+		margin: 0;
+		padding: 0 30px;
+		border: none;
+		border-radius: 4px;
+		background: #2196f3;
+		font-size: 14px;
+		color: #fff;
+		cursor: pointer;
+		transition: .15s;
+		&:hover {
+			background: #0b7ad5;
+		}
+		&:active {
+			background: #235c8b;
+		}
+		&:focus {
+			outline: none
+		}
+	}
+	.vue-image-filler-text-button {
+		margin: 0 0 0 12px;
+		padding: 0;
+		border: none;
+		background: transparent;
+		font-size: 14px;
+		color: #2196f3;
+		cursor: pointer;
+		transition: .15s;
+		&:hover {
+			color: #0b7ad5;
+		}
+		&:active {
+			color: #235c8b;
+		}
+		&:focus {
+			outline: none
+		}
+	}
+	.vue-image-filler-view{
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+		height: 400px;
+		p {
+			margin: 30px 0 0;
+			font-size: 14px;
+			color: #d3d9de
+		}
+	}
+	.vue-image-filler-canvas{
+		position: relative;
+		height: 300px;
+		overflow: hidden;
+		background: #ddd;
+		cursor: grab;
+		&:active{
+			cursor: grabbing;
+		}
+	}
+	.vue-image-filler-canvas-img{
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		outline: 1000px solid rgba(255, 255, 255, .7);
+		pointer-events: none;
+		img{
+			display: block;
+			width: 100%
+		}
+	}
+	.vue-image-filler-canvas-mask {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		outline: 1000px solid rgba(255, 255, 255, .5);
+		box-shadow: 0 0 10px rgba(0,0,0,.1), 0 0 3px rgba(0,0,0,.2);
+	}
 
-    }
-    div {
-      left: 0;
-      height: 6px;
-      margin-top: -3px;
-      border-radius: 3px;
-      background: #409eff;
-    }
-    i {
-      @width: 18px;
-      @borderWidth: 2px;
-      @realWidth: 40px;
-      width: @realWidth;
-      height: @realWidth;
-      margin-top: -@realWidth / 2;
-      right: -@realWidth / 2;
-      transition: .15s ease-in-out;
-      cursor: grab;
-      &:before {
-        content: '';
-        display: block;
-        position: relative;
-        width: @width - @borderWidth * 2;
-        height: @width - @borderWidth * 2;
-        top: (@realWidth - @width) / 2;
-        left: (@realWidth - @width) / 2;
-        border-radius: 100%;
-        border: @borderWidth solid #409eff;
-        background: #fff;
-      }
-      &:hover{
-        transform: scale(1.2);
-      }
-      &.dragging{
-        transform: scale(1.2);
-        &:before {
-          border-color: #2787e7;
-          background: #edf2f7;
-        }
-      }
-      &:active{
-        cursor: grabbing;
-      }
-    }
-  }
-  .footer {
-    padding: 20px 0 60px 80px;
-    text-align: center;
-    .main-button{
-      width: 200px 
-    }
-  }  
+	.vue-image-filler-slider-bar{
+		position: relative;
+		height: 40px;
+		margin: 60px 80px 40px;
+		&:before,
+		div,
+		i {
+			position: absolute;
+			top: 50%;
+			display: block;
+		}
+		&:before {
+			content: '';
+			width: 100%;
+			height: 6px;
+			margin-top: -3px;
+			border-radius: 3px;
+			background: #e4e7ed;
+		}
+		div {
+			left: 0;
+			height: 6px;
+			margin-top: -3px;
+			border-radius: 3px;
+			background: #409eff;
+		}
+		i {
+			@width: 18px;
+			@borderWidth: 2px;
+			@realWidth: 40px;
+			width: @realWidth;
+			height: @realWidth;
+			margin-top: -@realWidth / 2;
+			right: -@realWidth / 2;
+			transition: .15s ease-in-out;
+			cursor: grab;
+			&:before {
+				content: '';
+				display: block;
+				position: relative;
+				width: @width - @borderWidth * 2;
+				height: @width - @borderWidth * 2;
+				top: (@realWidth - @width) / 2;
+				left: (@realWidth - @width) / 2;
+				border-radius: 100%;
+				border: @borderWidth solid #409eff;
+				background: #fff;
+			}
+			&:hover{
+				transform: scale(1.2);
+			}
+			&.dragging{
+				transform: scale(1.2);
+				&:before {
+					border-color: #2787e7;
+					background: #edf2f7;
+				}
+			}
+			&:active{
+				cursor: grabbing;
+			}
+		}
+	}
+	.vue-image-filler-footer {
+		padding: 20px 0 60px 80px;
+		text-align: center;
+	}
 }

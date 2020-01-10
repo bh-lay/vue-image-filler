@@ -17,7 +17,7 @@ var Slider = {
 			default: 0
     },
 	},
-  template: `<div class="slider-bar" ref="outer">
+  template: `<div class="vue-image-filler-slider-bar" ref="outer">
     <div :style="{width: (progressLocal * 100) + '%'}"><i
       :class="[isDragging ? 'dragging' : '']"
       @mousedown="dragHandle"
