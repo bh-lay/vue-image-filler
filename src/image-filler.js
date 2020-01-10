@@ -1,9 +1,7 @@
-
 import dragHandle from './drag-handle.js'
 import Slider from './Slider.js'
 import template from './template.html'
 import './style.less'
-
 
 function getBoxSizePlaceIntoAnotherBox(innerWidth, innerHeight, outerWidth, outerHeight) {
 	if (outerWidth / outerHeight > innerWidth / innerHeight) {
