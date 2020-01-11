@@ -33,10 +33,6 @@ const Slider = {
 			return (this.value - this.min) / (this.max - this.min)
 		}
 	},
-	mounted: function () {
-	},
-	watch: {
-	},
 	methods: {
 		dragHandle(event) {
 			const percentStart = this.progressLocal
@@ -54,8 +50,6 @@ const Slider = {
 				}
 			})
 		},
-	},
-	beforeDestroy: function () {
 	}
 }
 

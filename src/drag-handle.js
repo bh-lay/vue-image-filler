@@ -1,4 +1,4 @@
-// 清除页面选择，组织浏览器默认事件防止页面抖动
+// 清除页面选择，阻止浏览器默认事件防止页面抖动
 function preventDefault (event) {
 	window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty()
 	event.preventDefault && event.preventDefault()

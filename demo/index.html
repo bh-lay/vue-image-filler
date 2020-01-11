@@ -11,30 +11,69 @@
 			padding: 0;
 			background: #333;
 		}
-
 		.container {
 			position: relative;
-			width: 80%;
-			max-width: 500px;
-			margin: 20px auto;
+			width: 100%;
+			max-width: 1024px;
+			margin: auto
 		}
-		h1 {
-			margin: 10px 0 20px;
-			font-size: 20px;
-			color: #fff;
+		.navigator{
+			background: #fff
+		}
+		.navigator .container{
+			height: 50px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center
+		}
+		.navigator h1 {
+			margin: 0;
+			text-indent: 10px;
+			font-size: 16px;
+			color: #21272c;
+		}
+		.navigator h1 small {
+			padding: 0 3px;
+			font-weight: normal;
+			font-size: 12px;
+			color: #505a62
+		}
+		.navigator .side {
+			margin-right: 10px;
+		}
+
+		.content {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			margin: 20px 0;
 		}
 		.card{
+			flex-grow: 1;
+			width: 340px;
+			margin: 10px;
 			background: #fff;
+		}
+		.preview {
+			padding: 20px;
+		}
+		.preview img {
+			width: 100%
 		}
 	</style>
 </head>
 
 <body>
+	<div class="navigator">
+			<div class="container">
+				<h1>图像填充<small>剪裁</small>工具</h1>
+				<div class="side">
+					<a href="https://github.com/bh-lay/vue-image-filler/">Github</a>
+				</div>
+			</div>
+	</div>
 	<div class="container">
-		<h1>图像填充（剪裁）demo</h1>
-		<div class="card">
-			<div id="app"></div>
-		</div>
+		<div id="app"></div>
 	</div>
 	<script src="vue.min.js"></script>
 	<script type="text/javascript" src="../dist/vue-image-filler.umd.js"></script>
@@ -42,25 +81,36 @@
 		new Vue({
 			el: '#app',
 			data: {
+				previewImageUrl: ''
 			},
 			components: {
 				ImageFiller: ImageFiller
 			},
-			template: '<div>' +
-				'<ImageFiller ' +
-					':width="300"' +
-					':height="200"' +
-					'@confirm="handleFillerSuccuss"' +
-				'/>' +
+			template: '<div class="content">' +
+				'<div class="card">' +
+					'<ImageFiller ' +
+						':width="900"' +
+						':height="600"' +
+						'@confirm="handleFillerSuccuss"' +
+					'/>' +
+				'</div>' +
+				'<div class="card">' +
+					'<div class="preview" v-if="previewImageUrl">' +
+						'<h2>图像剪裁完成</h2>' +
+						'<p>请打开调试工具查看完整数据！</p>' +
+						'<img :src="previewImageUrl">' +
+					'</div>' +
+				'</div>' +
 			'</div>',
 			methods: {
 				handleFillerSuccuss: function (data) {
-					alert('请打开调试工具查看返回数据！')
 					console.log('fileBlob:	裁切画面对应的 blob 数据')
 					console.log('file:		裁切画面文件，可直接用于上传保存')
 					console.log('config:		裁切参数配置，可用于传递给其他服务，均是水平、垂直方向上的相对比值')
 					console.log('------------------------')
 					console.log(data)
+
+					this.previewImageUrl = URL.createObjectURL(data.fileBlob)
 				}
 			}
 		})

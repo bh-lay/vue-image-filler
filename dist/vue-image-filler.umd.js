@@ -16,7 +16,7 @@
 	    return css;
 	}
 
-	// 清除页面选择，组织浏览器默认事件防止页面抖动
+	// 清除页面选择，阻止浏览器默认事件防止页面抖动
 	function preventDefault(event) {
 		window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
 		event.preventDefault && event.preventDefault();
@@ -124,8 +124,6 @@
 				return (this.value - this.min) / (this.max - this.min);
 			}
 		},
-		mounted: function mounted() {},
-		watch: {},
 		methods: {
 			dragHandle: function dragHandle$1(event) {
 				var _this = this;
@@ -147,8 +145,7 @@
 					}
 				});
 			}
-		},
-		beforeDestroy: function beforeDestroy() {}
+		}
 	};
 
 	var template = "<div class=\"vue-image-filler\" ref=\"outer\">\r\n\t<input type=\"file\"\r\n\t\tref=\"uploadInput\"\r\n\t\taccept=\"image/png, image/jpg, image/jpeg\"\r\n\t\t@change=\"fileChangeHandle($event)\"\r\n\t\tclass=\"vue-image-filler-real-input\"\r\n\t/>\r\n\t<template v-if=\"!isFileSelected\">\r\n\t\t<div class=\"vue-image-filler-view\">\r\n\t\t\t<button @click=\"triggerFileSelect\" class=\"vue-image-filler-button\">选择图片</button>\r\n\t\t\t<p>仅支持jpg、png、jpeg格式文件上传！</p>\r\n\t\t</div>\r\n\t</template>\r\n\t<template v-else>\r\n\t\t<div class=\"vue-image-filler-canvas\"\r\n\t\t\t:style=\"{\r\n\t\t\t\theight: size.canvasHeight\r\n\t\t\t}\"\r\n\t\t\t@mousedown=\"moveImage\"\r\n\t\t\t@touchstart=\"moveImage\"\r\n\t\t>\r\n\t\t\t<div class=\"vue-image-filler-canvas-img\" ref=\"canvasImage\"\r\n\t\t\t\t:style=\"{\r\n\t\t\t\t\twidth: imageWidthInView + 'px',\r\n\t\t\t\t\theight: imageHeightInView + 'px',\r\n\t\t\t\t\tmarginTop: size.offsetTop + 'px',\r\n\t\t\t\t\tmarginLeft: size.offsetLeft + 'px'\r\n\t\t\t\t}\"\r\n\t\t\t></div>\r\n\t\t\t<div\r\n\t\t\t\tclass=\"vue-image-filler-canvas-mask\"\r\n\t\t\t\t:style=\"{\r\n\t\t\t\t\twidth: size.cropWidthInView + 'px',\r\n\t\t\t\t\theight: size.cropHeightInView + 'px',\r\n\t\t\t\t}\"\r\n\t\t\t></div>\r\n\t\t</div>\r\n\t\t<Slider\r\n\t\t\t:min=\"size.scaleMin\"\r\n\t\t\t:max=\"size.scaleMax\"\r\n\t\t\tv-model=\"size.scale\"\r\n\t  />\r\n\t  <div class=\"vue-image-filler-footer\">\r\n\t\t\t<button class=\"vue-image-filler-button\" @click=\"upload\">上传</button>\r\n\t\t\t<button class=\"vue-image-filler-text-button\" @click=\"triggerFileSelect\">重新上传</button>\r\n\t\t</div>\r\n\t</template>\r\n</div>";
@@ -223,9 +220,8 @@
 			}
 		},
 		template: template,
-		mounted: function mounted() {},
 		watch: {
-			'size.scale': function sizeScale(newValue) {
+			'size.scale': function sizeScale() {
 				var offsetLeftRange = (this.imageWidthInView - this.size.cropWidthInView) / 2;
 				var offsetTopRange = (this.imageHeightInView - this.size.cropHeightInView) / 2;
 				if (this.size.offsetLeft > offsetLeftRange) {
@@ -334,16 +330,15 @@
 					callback && callback({
 						fileBlob: fileBlob,
 						config: {
-							x: -usedX / usedWidth + 0,
-							y: -usedY / usedHeight + 0,
+							x: 0 - usedX / usedWidth,
+							y: 0 - usedY / usedHeight,
 							width: _this4.cropWidth / usedWidth,
 							height: _this4.cropHeight / usedHeight
 						}
 					});
 				}, 'image/jpeg', 0.95);
 			}
-		},
-		beforeDestroy: function beforeDestroy() {}
+		}
 	};
 
 	ImageFiller.install = function (Vue) {

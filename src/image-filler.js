@@ -20,7 +20,7 @@ function getBoxSizePlaceIntoAnotherBox(innerWidth, innerHeight, outerWidth, oute
 var ImageFiller = {
 	name: 'image-filler',
 	components: {
-		Slider: Slider
+		Slider
 	},
 	props: {
 		width: {
@@ -71,10 +71,8 @@ var ImageFiller = {
 		}
 	},
 	template: template,
-	mounted: function () {
-	},
 	watch: {
-		'size.scale'(newValue) {
+		'size.scale'() {
 			const offsetLeftRange = (this.imageWidthInView - this.size.cropWidthInView) / 2
 			const offsetTopRange = (this.imageHeightInView - this.size.cropHeightInView) / 2
 			if (this.size.offsetLeft > offsetLeftRange) {
@@ -165,16 +163,14 @@ var ImageFiller = {
 				callback && callback({
 					fileBlob,
 					config: {
-						x: -usedX / usedWidth + 0,
-						y: -usedY / usedHeight + 0,
+						x: 0 - usedX / usedWidth,
+						y: 0 - usedY / usedHeight,
 						width: this.cropWidth / usedWidth,
 						height: this.cropHeight / usedHeight
 					}
 				})
 			}, 'image/jpeg', 0.95)
 		}
-	},
-	beforeDestroy: function () {
 	}
 }
 
