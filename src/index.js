@@ -1,6 +1,6 @@
-import ImageFiller from './image-filler.js'
-
-ImageFiller.install = function (Vue) {
-	Vue.component('ImageFiller', ImageFiller);
+import ImageFiller from './vue-image-filler'
+function install (Vue) {
+  Vue.component('imageFiller', VueImageFiller);
 }
-export default ImageFiller
+
+export {ImageFiller, install}
