@@ -13,31 +13,27 @@
 
 你可以从 `dist` 目录选择适合你项目的模块文件，独立引入，当然我们更推荐你通过 `npm` 安装使用。
 
-### 方式一、下载模块文件
-- `vue-image-filler.es.js` 标准的 ES Module 版本，适合标准化的构建项目。
-- `vue-image-filler.umd.js` 兼容 amd、cmd 模块及浏览器直接引入，若直接引入则会占用 `ImageFiller` 全局命名空间。
-
-### 方式二、通过 `npm` 安装
+### 通过 `npm` 安装模块
 ``` shell
 npm install vue-image-filler --save
 ```
 ``` javascript
-// 第一步，引入模块
-// es 引入方式
-import ImageFiller from 'vue-image-filler'
-// or 标准 node 模块引入
-var ImageFiller = require('vue-image-filler')
-
-// 第二步、注册模块
 // 全局注册模块
+import ImageFiller from 'vue-image-filler'
+
 Vue.use(ImageFiller)
-// or 局部注册
+
+// or
+
+// 局部注册
+import {ImageFiller} from 'vue-image-filler'
+
 new Vue({
   data: {
     // ...
   },
   components: {
-    ImageFiller: ImageFiller
+    ImageFiller
   },
   methods: {
     // ...
