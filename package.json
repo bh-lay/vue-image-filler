@@ -1,6 +1,6 @@
 {
   "name": "vue-image-filler",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "图像[填充]剪裁工具 [ Vue Image clipping tool ]",
   "main": "./dist/index.js",
   "repository": {
